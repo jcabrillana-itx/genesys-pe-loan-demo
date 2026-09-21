@@ -175,41 +175,35 @@ btnSalir.addEventListener('click', () => {
 // que envía el HSM "validacion_compra_tarjeta" (Sí/No por WhatsApp).
 // ============================================================
 const FRAUD_THRESHOLD = 500000;
-const compraMontoInput = document.getElementById('compra-monto');
-const compraMontoOutput = document.getElementById('compra-monto-output');
-const compraForm = document.getElementById('compra-form');
 const compraResultado = document.getElementById('compra-resultado');
+const botonesComprar = document.querySelectorAll('.btn-comprar');
 
-compraMontoInput.addEventListener('input', () => {
-  compraMontoOutput.textContent = formatCurrency(compraMontoInput.value);
-});
+botonesComprar.forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const monto = Number(btn.dataset.monto);
+    const comercio = btn.dataset.comercio;
 
-compraForm.addEventListener('submit', (e) => {
-  e.preventDefault();
+    if (monto > FRAUD_THRESHOLD) {
+      // Evento clave para el Segmento/Action Map del Caso 2.
+      trackEvent('compra_tarjeta_sospechosa', {
+        monto,
+        comercio,
+        telefono: demoCustomer.telefono,
+        nombre: demoCustomer.nombre
+      });
 
-  const monto = Number(compraMontoInput.value);
-  const comercio = 'Prüne';
+      compraResultado.innerHTML =
+        '<h2>Validando tu compra</h2>' +
+        '<p>Por ser un monto elevado, te enviamos un WhatsApp para confirmar que fuiste vos. ' +
+        'Respondé ahí para aprobar la compra.</p>';
+    } else {
+      trackEvent('compra_tarjeta_aprobada', { monto, comercio });
 
-  if (monto > FRAUD_THRESHOLD) {
-    // Evento clave para el Segmento/Action Map del Caso 2.
-    trackEvent('compra_tarjeta_sospechosa', {
-      monto,
-      comercio,
-      telefono: demoCustomer.telefono,
-      nombre: demoCustomer.nombre
-    });
+      compraResultado.innerHTML =
+        '<h2>¡Compra aprobada!</h2>' +
+        '<p>Tu compra en ' + comercio + ' por ' + formatCurrency(monto) + ' fue aprobada.</p>';
+    }
 
-    compraResultado.innerHTML =
-      '<h2>Validando tu compra</h2>' +
-      '<p>Por ser un monto elevado, te enviamos un WhatsApp para confirmar que fuiste vos. ' +
-      'Respondé ahí para aprobar la compra.</p>';
-  } else {
-    trackEvent('compra_tarjeta_aprobada', { monto, comercio });
-
-    compraResultado.innerHTML =
-      '<h2>¡Compra aprobada!</h2>' +
-      '<p>Tu compra en ' + comercio + ' por ' + formatCurrency(monto) + ' fue aprobada.</p>';
-  }
-
-  compraResultado.classList.remove('hidden');
+    compraResultado.classList.remove('hidden');
+  });
 });

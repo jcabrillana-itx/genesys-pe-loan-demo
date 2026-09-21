@@ -36,7 +36,7 @@
     <div class="brand"><img src="interaxa-logo.png" alt="Interaxa" class="brand-logo" /><span class="brand-suffix">Bank</span></div>
     <nav>
       <a href="#">Cuentas</a>
-      <a href="#" data-view="compra">Tarjetas</a>
+      <a href="#" data-view="compra">Tienda</a>
       <a href="#" data-view="prestamos" class="active">Préstamos</a>
       <a href="#">Inversiones</a>
     </nav>
@@ -109,25 +109,42 @@
 
     <section id="view-compra" class="view hidden">
       <section class="hero">
-        <h1>Pagá con tu tarjeta</h1>
-        <p>Elegí un producto y confirmá la compra con tu tarjeta de crédito.</p>
+        <h1>Tienda Interaxa Bank</h1>
+        <p>Comprá con tu tarjeta de crédito y sumá puntos de fidelización.</p>
       </section>
 
-      <section id="compra" class="simulator card">
-        <div class="product">
-          <div class="product-name">Cartera de cuero — Prüne</div>
-          <div class="product-shop">Prüne, Av. Cabildo 1234</div>
-        </div>
-
-        <form id="compra-form">
-          <div class="field">
-            <label for="compra-monto">Monto de la compra</label>
-            <input type="range" id="compra-monto" min="50000" max="1200000" step="10000" value="600000" />
-            <output id="compra-monto-output">$600.000</output>
+      <section id="compra" class="card">
+        <div class="product-grid">
+          <div class="product-card">
+            <div class="product-image">
+              <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <rect x="15" y="35" width="90" height="65" rx="8" fill="#7a4a2b"/>
+                <rect x="15" y="35" width="90" height="18" rx="8" fill="#5c3a22"/>
+                <circle cx="60" cy="67" r="7" fill="#e8c48a"/>
+                <rect x="30" y="20" width="60" height="20" rx="10" fill="none" stroke="#5c3a22" stroke-width="5"/>
+              </svg>
+            </div>
+            <div class="product-name">Cartera de cuero premium</div>
+            <div class="product-shop">Prüne, Av. Cabildo 1234</div>
+            <div class="product-price">$600.000</div>
+            <button type="button" class="btn-primary btn-comprar" data-monto="600000" data-comercio="Prüne">Comprar</button>
           </div>
 
-          <button type="submit" class="btn-primary">Pagar con tarjeta</button>
-        </form>
+          <div class="product-card">
+            <div class="product-image">
+              <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <rect x="20" y="45" width="80" height="55" rx="6" fill="#2b2b2b"/>
+                <rect x="20" y="45" width="80" height="14" rx="6" fill="#1a1a1a"/>
+                <rect x="35" y="70" width="50" height="6" rx="3" fill="#6b6b6b"/>
+                <rect x="35" y="82" width="30" height="6" rx="3" fill="#6b6b6b"/>
+              </svg>
+            </div>
+            <div class="product-name">Billetera clásica</div>
+            <div class="product-shop">Prüne, Av. Cabildo 1234</div>
+            <div class="product-price">$120.000</div>
+            <button type="button" class="btn-primary btn-comprar" data-monto="120000" data-comercio="Prüne">Comprar</button>
+          </div>
+        </div>
 
         <div id="compra-resultado" class="result hidden"></div>
       </section>
