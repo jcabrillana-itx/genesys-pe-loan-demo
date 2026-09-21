@@ -48,7 +48,23 @@
       <p>Elegí el monto y el plazo, y mirá al instante la cuota estimada. Sin compromiso.</p>
     </section>
 
-    <section class="simulator card">
+    <section id="login" class="simulator card">
+      <h2>Ingresá a tu Banco Demo</h2>
+      <p style="color:#6b7280; margin-top:-8px;">Simulamos que ya estás logueado en la app, como en el caso real de ICBC.</p>
+      <form id="login-form">
+        <div class="field">
+          <label for="login-name">Nombre</label>
+          <input type="text" id="login-name" placeholder="Ej: Jonatan" required />
+        </div>
+        <div class="field">
+          <label for="login-phone">WhatsApp (con código de país)</label>
+          <input type="tel" id="login-phone" placeholder="Ej: +5491122334455" required />
+        </div>
+        <button type="submit" class="btn-primary">Ingresar</button>
+      </form>
+    </section>
+
+    <section id="simulator" class="simulator card hidden">
       <form id="simulator-form">
         <div class="field">
           <label for="amount">Monto a solicitar</label>

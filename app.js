@@ -1,23 +1,14 @@
 // ============================================================
-// Número de WhatsApp para la demo: se lee de la URL en tiempo de
-// ejecución (?telefono=+549...), NUNCA se hardcodea acá, porque
-// este archivo es público en GitHub Pages. Si no se pasa el
-// parámetro, se manda un valor de ejemplo obviamente falso.
-// Se envía como customAttribute "telefono" en el evento de
-// abandono, para que el Architect Flow lo lea vía "Get Journey
-// Session" y lo use al disparar el HSM real.
-// NOTA: Journey.identify() está deprecado desde 2023 — por eso
-// mandamos el teléfono como atributo del evento y no con identify.
+// Datos del "cliente logueado" para la demo: se piden en un mini
+// login en pantalla (nunca se hardcodean en el código, porque este
+// archivo es público en GitHub Pages). Simula que en la app real
+// de ICBC el visitante ya está autenticado — Predictive Engagement
+// por sí solo no conoce la identidad de un visitante anónimo.
+// Se mandan como customAttributes en los eventos para que se vean
+// en el timeline de Live Now, y como valor Static value en el
+// Action Map para el envío del HSM (ver documento de transparencia).
 // ============================================================
-function getDemoPhoneNumber() {
-  const fromUrl = new URLSearchParams(window.location.search).get('telefono');
-  return fromUrl || '+5491100000000';
-}
-
-function getDemoCustomerName() {
-  const fromUrl = new URLSearchParams(window.location.search).get('nombre');
-  return fromUrl || 'Cliente Demo';
-}
+const demoCustomer = { nombre: null, telefono: null };
 
 // ============================================================
 // Helper: envía un evento custom a Predictive Engagement vía el
@@ -55,6 +46,27 @@ function trackEvent(eventName, attributes) {
     pePendingEvents.push([eventName, attributes]);
   }
 }
+
+const loginSection = document.getElementById('login');
+const loginForm = document.getElementById('login-form');
+const simulatorSection = document.getElementById('simulator');
+
+loginForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  demoCustomer.nombre = document.getElementById('login-name').value.trim();
+  demoCustomer.telefono = document.getElementById('login-phone').value.trim();
+
+  // Evento de identificación: dispara apenas "loguea", para que
+  // aparezca con nombre/teléfono desde el arranque en Live Now.
+  trackEvent('visitante_identificado', {
+    nombre: demoCustomer.nombre,
+    telefono: demoCustomer.telefono
+  });
+
+  loginSection.classList.add('hidden');
+  simulatorSection.classList.remove('hidden');
+});
 
 const amountInput = document.getElementById('amount');
 const amountOutput = document.getElementById('amount-output');
@@ -121,8 +133,8 @@ btnSalir.addEventListener('click', () => {
   trackEvent('simulador_prestamo_abandonado', {
     monto: Number(amountInput.value),
     plazo_meses: Number(document.getElementById('term').value),
-    telefono: getDemoPhoneNumber(),
-    nombre: getDemoCustomerName()
+    telefono: demoCustomer.telefono,
+    nombre: demoCustomer.nombre
   });
 
   resultBox.classList.add('hidden');
