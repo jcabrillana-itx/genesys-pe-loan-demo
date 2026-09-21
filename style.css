@@ -25,8 +25,9 @@ body {
   color: white;
 }
 
-.brand { font-size: 20px; font-weight: 700; }
-.brand span { color: var(--accent); }
+.brand { display: flex; align-items: center; gap: 8px; font-size: 20px; font-weight: 700; }
+.brand-logo { height: 22px; width: auto; filter: invert(1); display: block; }
+.brand-suffix { color: var(--accent); }
 
 .topbar nav a {
   color: white;
