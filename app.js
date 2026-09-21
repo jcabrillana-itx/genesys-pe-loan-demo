@@ -14,6 +14,11 @@ function getDemoPhoneNumber() {
   return fromUrl || '+5491100000000';
 }
 
+function getDemoCustomerName() {
+  const fromUrl = new URLSearchParams(window.location.search).get('nombre');
+  return fromUrl || 'Cliente Demo';
+}
+
 // ============================================================
 // Helper: envía un evento custom a Predictive Engagement vía el
 // Journey plugin del snippet unificado de Genesys Cloud.
@@ -116,7 +121,8 @@ btnSalir.addEventListener('click', () => {
   trackEvent('simulador_prestamo_abandonado', {
     monto: Number(amountInput.value),
     plazo_meses: Number(document.getElementById('term').value),
-    telefono: getDemoPhoneNumber()
+    telefono: getDemoPhoneNumber(),
+    nombre: getDemoCustomerName()
   });
 
   resultBox.classList.add('hidden');
