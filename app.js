@@ -1,4 +1,20 @@
 // ============================================================
+// Número de WhatsApp para la demo: se lee de la URL en tiempo de
+// ejecución (?telefono=+549...), NUNCA se hardcodea acá, porque
+// este archivo es público en GitHub Pages. Si no se pasa el
+// parámetro, se manda un valor de ejemplo obviamente falso.
+// Se envía como customAttribute "telefono" en el evento de
+// abandono, para que el Architect Flow lo lea vía "Get Journey
+// Session" y lo use al disparar el HSM real.
+// NOTA: Journey.identify() está deprecado desde 2023 — por eso
+// mandamos el teléfono como atributo del evento y no con identify.
+// ============================================================
+function getDemoPhoneNumber() {
+  const fromUrl = new URLSearchParams(window.location.search).get('telefono');
+  return fromUrl || '+5491100000000';
+}
+
+// ============================================================
 // Helper: envía un evento custom a Predictive Engagement vía el
 // Journey plugin del snippet unificado de Genesys Cloud.
 // Se espera a Journey.ready antes de mandar comandos (si el
@@ -95,9 +111,12 @@ btnContratar.addEventListener('click', () => {
 btnSalir.addEventListener('click', () => {
   // Evento explícito de abandono, útil para mostrar el trigger del
   // Action Map en vivo sin tener que esperar un timeout de sesión.
+  // Incluye "telefono" para que el Architect Flow pueda recuperarlo
+  // vía "Get Journey Session" y disparar el HSM de WhatsApp.
   trackEvent('simulador_prestamo_abandonado', {
     monto: Number(amountInput.value),
-    plazo_meses: Number(document.getElementById('term').value)
+    plazo_meses: Number(document.getElementById('term').value),
+    telefono: getDemoPhoneNumber()
   });
 
   resultBox.classList.add('hidden');
