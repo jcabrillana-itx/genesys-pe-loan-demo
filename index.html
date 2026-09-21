@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Banco Demo | Simulador de préstamos personales</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <!--
+    ============================================================
+    GENESYS PREDICTIVE ENGAGEMENT — TRACKING SNIPPET
+    ============================================================
+    Pegar acá el snippet obtenido en:
+    Genesys Cloud Admin > Global Settings > Tracking Snippet tab
+    (requiere que el dominio de este sitio esté en la lista de
+    dominios permitidos, en la pestaña Web tracking).
+    ============================================================
+  -->
+  <!-- GENESYS_TRACKING_SNIPPET_PLACEHOLDER -->
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">Banco<span>Demo</span></div>
+    <nav>
+      <a href="#">Cuentas</a>
+      <a href="#">Tarjetas</a>
+      <a href="#" class="active">Préstamos</a>
+      <a href="#">Inversiones</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>Simulá tu préstamo personal</h1>
+      <p>Elegí el monto y el plazo, y mirá al instante la cuota estimada. Sin compromiso.</p>
+    </section>
+
+    <section class="simulator card">
+      <form id="simulator-form">
+        <div class="field">
+          <label for="amount">Monto a solicitar</label>
+          <input type="range" id="amount" min="100000" max="5000000" step="50000" value="1000000" />
+          <output id="amount-output">$1.000.000</output>
+        </div>
+
+        <div class="field">
+          <label for="term">Plazo (meses)</label>
+          <select id="term">
+            <option value="6">6 meses</option>
+            <option value="12" selected>12 meses</option>
+            <option value="24">24 meses</option>
+            <option value="36">36 meses</option>
+            <option value="48">48 meses</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn-primary">Simular cuota</button>
+      </form>
+
+      <div id="result" class="result hidden">
+        <h2>Resultado de tu simulación</h2>
+        <p class="result-row"><span>Monto</span><strong id="result-amount"></strong></p>
+        <p class="result-row"><span>Plazo</span><strong id="result-term"></strong></p>
+        <p class="result-row"><span>Cuota estimada</span><strong id="result-quota"></strong></p>
+        <p class="result-row"><span>TNA estimada</span><strong>78%</strong></p>
+
+        <div class="result-actions">
+          <button id="btn-contratar" class="btn-primary">Contratar ahora</button>
+          <button id="btn-salir" class="btn-secondary">Lo pienso y vuelvo después</button>
+        </div>
+      </div>
+
+      <div id="confirmation" class="result hidden">
+        <h2>¡Listo!</h2>
+        <p>Tu solicitud fue enviada. En breve un asesor se pondrá en contacto.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Sitio de demostración para preventa — Genesys Predictive Engagement. No es un sitio bancario real.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
