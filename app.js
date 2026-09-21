@@ -49,7 +49,35 @@ function trackEvent(eventName, attributes) {
 
 const loginSection = document.getElementById('login');
 const loginForm = document.getElementById('login-form');
-const simulatorSection = document.getElementById('simulator');
+const viewPrestamos = document.getElementById('view-prestamos');
+const viewCompra = document.getElementById('view-compra');
+const navLinks = document.querySelectorAll('nav a[data-view]');
+
+let loggedIn = false;
+let currentView = 'prestamos';
+
+function renderView() {
+  if (!loggedIn) {
+    loginSection.classList.remove('hidden');
+    viewPrestamos.classList.add('hidden');
+    viewCompra.classList.add('hidden');
+    return;
+  }
+  loginSection.classList.add('hidden');
+  viewPrestamos.classList.toggle('hidden', currentView !== 'prestamos');
+  viewCompra.classList.toggle('hidden', currentView !== 'compra');
+  navLinks.forEach((link) => {
+    link.classList.toggle('active', link.dataset.view === currentView);
+  });
+}
+
+navLinks.forEach((link) => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    currentView = link.dataset.view;
+    renderView();
+  });
+});
 
 loginForm.addEventListener('submit', (e) => {
   e.preventDefault();
@@ -64,8 +92,8 @@ loginForm.addEventListener('submit', (e) => {
     telefono: demoCustomer.telefono
   });
 
-  loginSection.classList.add('hidden');
-  simulatorSection.classList.remove('hidden');
+  loggedIn = true;
+  renderView();
 });
 
 const amountInput = document.getElementById('amount');
@@ -139,4 +167,49 @@ btnSalir.addEventListener('click', () => {
 
   resultBox.classList.add('hidden');
   alert('Evento de abandono enviado a Predictive Engagement (ver consola / Action Map).');
+});
+
+// ============================================================
+// Caso 2 — Validación de fraude: compra con tarjeta.
+// Monto > $500.000 dispara el evento clave del Segmento/Action Map
+// que envía el HSM "validacion_compra_tarjeta" (Sí/No por WhatsApp).
+// ============================================================
+const FRAUD_THRESHOLD = 500000;
+const compraMontoInput = document.getElementById('compra-monto');
+const compraMontoOutput = document.getElementById('compra-monto-output');
+const compraForm = document.getElementById('compra-form');
+const compraResultado = document.getElementById('compra-resultado');
+
+compraMontoInput.addEventListener('input', () => {
+  compraMontoOutput.textContent = formatCurrency(compraMontoInput.value);
+});
+
+compraForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  const monto = Number(compraMontoInput.value);
+  const comercio = 'Prüne';
+
+  if (monto > FRAUD_THRESHOLD) {
+    // Evento clave para el Segmento/Action Map del Caso 2.
+    trackEvent('compra_tarjeta_sospechosa', {
+      monto,
+      comercio,
+      telefono: demoCustomer.telefono,
+      nombre: demoCustomer.nombre
+    });
+
+    compraResultado.innerHTML =
+      '<h2>Validando tu compra</h2>' +
+      '<p>Por ser un monto elevado, te enviamos un WhatsApp para confirmar que fuiste vos. ' +
+      'Respondé ahí para aprobar la compra.</p>';
+  } else {
+    trackEvent('compra_tarjeta_aprobada', { monto, comercio });
+
+    compraResultado.innerHTML =
+      '<h2>¡Compra aprobada!</h2>' +
+      '<p>Tu compra en ' + comercio + ' por ' + formatCurrency(monto) + ' fue aprobada.</p>';
+  }
+
+  compraResultado.classList.remove('hidden');
 });

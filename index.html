@@ -36,18 +36,13 @@
     <div class="brand">Banco<span>Demo</span></div>
     <nav>
       <a href="#">Cuentas</a>
-      <a href="#">Tarjetas</a>
-      <a href="#" class="active">Préstamos</a>
+      <a href="#" data-view="compra">Tarjetas</a>
+      <a href="#" data-view="prestamos" class="active">Préstamos</a>
       <a href="#">Inversiones</a>
     </nav>
   </header>
 
   <main>
-    <section class="hero">
-      <h1>Simulá tu préstamo personal</h1>
-      <p>Elegí el monto y el plazo, y mirá al instante la cuota estimada. Sin compromiso.</p>
-    </section>
-
     <section id="login" class="simulator card">
       <h2>Ingresá a tu Banco Demo</h2>
       <p style="color:#6b7280; margin-top:-8px;">Simulamos que ya estás logueado en la app, como en el caso real de ICBC.</p>
@@ -64,7 +59,13 @@
       </form>
     </section>
 
-    <section id="simulator" class="simulator card hidden">
+    <section id="view-prestamos" class="view hidden">
+      <section class="hero">
+        <h1>Simulá tu préstamo personal</h1>
+        <p>Elegí el monto y el plazo, y mirá al instante la cuota estimada. Sin compromiso.</p>
+      </section>
+
+    <section id="simulator" class="simulator card">
       <form id="simulator-form">
         <div class="field">
           <label for="amount">Monto a solicitar</label>
@@ -103,6 +104,33 @@
         <h2>¡Listo!</h2>
         <p>Tu solicitud fue enviada. En breve un asesor se pondrá en contacto.</p>
       </div>
+    </section>
+    </section>
+
+    <section id="view-compra" class="view hidden">
+      <section class="hero">
+        <h1>Pagá con tu tarjeta</h1>
+        <p>Elegí un producto y confirmá la compra con tu tarjeta de crédito.</p>
+      </section>
+
+      <section id="compra" class="simulator card">
+        <div class="product">
+          <div class="product-name">Cartera de cuero — Prüne</div>
+          <div class="product-shop">Prüne, Av. Cabildo 1234</div>
+        </div>
+
+        <form id="compra-form">
+          <div class="field">
+            <label for="compra-monto">Monto de la compra</label>
+            <input type="range" id="compra-monto" min="50000" max="1200000" step="10000" value="600000" />
+            <output id="compra-monto-output">$600.000</output>
+          </div>
+
+          <button type="submit" class="btn-primary">Pagar con tarjeta</button>
+        </form>
+
+        <div id="compra-resultado" class="result hidden"></div>
+      </section>
     </section>
   </main>
 
