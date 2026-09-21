@@ -1,17 +1,38 @@
 // ============================================================
-// Helper: envía un evento custom a Predictive Engagement si el
-// snippet ya está cargado (ac = Action Cloud / Journey SDK).
-// Mientras no se pegue el snippet real en index.html, esto solo
-// deja un log en consola para poder probar el flujo del sitio.
-// Doc: https://all.docs.genesys.com/ATC/Current/SDK/Record
-//   ac('record', eventName, { atributo: valor, ... })
+// Helper: envía un evento custom a Predictive Engagement vía el
+// Journey plugin del snippet unificado de Genesys Cloud.
+// Se espera a Journey.ready antes de mandar comandos (si el
+// evento llega antes, queda en cola y se manda apenas esté listo).
+// Doc: https://developer.genesys.cloud/commdigital/digital/webmessaging/messengersdk/SDKCommandsEvents/journeyPlugin
+//   Genesys('command', 'Journey.record', { eventName, customAttributes })
 // ============================================================
+let peJourneyReady = false;
+const pePendingEvents = [];
+
+function peFlushPending() {
+  while (pePendingEvents.length) {
+    const [eventName, attributes] = pePendingEvents.shift();
+    window.Genesys('command', 'Journey.record', { eventName, customAttributes: attributes });
+  }
+}
+
+if (typeof window.Genesys === 'function') {
+  window.Genesys('subscribe', 'Journey.ready', function () {
+    peJourneyReady = true;
+    console.log('[PE] Journey.ready');
+    peFlushPending();
+  });
+}
+
 function trackEvent(eventName, attributes) {
   attributes = attributes || {};
-  if (typeof ac === 'function') {
-    ac('record', eventName, attributes);
-  }
   console.log('[PE track]', eventName, attributes);
+  if (typeof window.Genesys !== 'function') return;
+  if (peJourneyReady) {
+    window.Genesys('command', 'Journey.record', { eventName, customAttributes: attributes });
+  } else {
+    pePendingEvents.push([eventName, attributes]);
+  }
 }
 
 const amountInput = document.getElementById('amount');
