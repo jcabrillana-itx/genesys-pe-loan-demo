@@ -101,6 +101,8 @@ const amountOutput = document.getElementById('amount-output');
 const form = document.getElementById('simulator-form');
 const resultBox = document.getElementById('result');
 const confirmationBox = document.getElementById('confirmation');
+const feedbackBox = document.getElementById('feedback');
+const feedbackGracias = document.getElementById('feedback-gracias');
 const btnContratar = document.getElementById('btn-contratar');
 const btnSalir = document.getElementById('btn-salir');
 
@@ -134,6 +136,7 @@ form.addEventListener('submit', (e) => {
 
   resultBox.classList.remove('hidden');
   confirmationBox.classList.add('hidden');
+  feedbackBox.classList.add('hidden');
 
   // Evento: el visitante llegó a ver un resultado concreto de simulación.
   // Este es el evento clave para armar el segmento de "abandono de
@@ -166,7 +169,32 @@ btnSalir.addEventListener('click', () => {
   });
 
   resultBox.classList.add('hidden');
-  alert('Evento de abandono enviado a Predictive Engagement (ver consola / Action Map).');
+  feedbackBox.classList.remove('hidden');
+  feedbackGracias.classList.add('hidden');
+});
+
+// Paso del diagrama de ICBC: "simula pero no toma el préstamo" muestra una
+// encuesta (en el caso real, un formulario de Qualtrics) con el motivo.
+const MENSAJES_FEEDBACK = {
+  tasa_alta: 'Gracias por contarnos. Registramos tu opinión sobre la tasa.',
+  monto_bajo: 'Gracias por contarnos. Un asesor comercial te va a contactar para revisar tus límites.'
+};
+
+document.querySelectorAll('.btn-feedback').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const motivo = btn.dataset.motivo;
+
+    trackEvent('feedback_' + motivo, {
+      motivo,
+      monto: Number(amountInput.value),
+      plazo_meses: Number(document.getElementById('term').value),
+      telefono: demoCustomer.telefono,
+      nombre: demoCustomer.nombre
+    });
+
+    feedbackGracias.textContent = MENSAJES_FEEDBACK[motivo];
+    feedbackGracias.classList.remove('hidden');
+  });
 });
 
 // ============================================================
